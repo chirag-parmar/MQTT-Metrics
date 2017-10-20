@@ -37,8 +37,8 @@ app.post('/', function(req,res) {
   startMeasure = cpuAverage();
 
   metricData['CPU'] = percentageCPU;
-  metricData['totalMem'] = os.totalmem();
-  metricData['freeMem'] = os.freemem();
+  metricData['totalMem'] = os.totalmem()/1048576;
+  metricData['freeMem'] = os.freemem()/1048576;
   res.send(JSON.stringify(metricData))
 })
 
