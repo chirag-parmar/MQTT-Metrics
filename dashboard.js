@@ -8,11 +8,35 @@ const os             = require('os');
 var port = process.env.PORT || 8000;
 var request = require('request')
 
+function cpuAverage() {
+  var totalIdle = 0, totalTick = 0;
+  var cpus = os.cpus();
+  for(var i = 0, len = cpus.length; i < len; i++) {
+    var cpu = cpus[i];
+    for(type in cpu.times) {
+      totalTick += cpu.times[type];
+   }
+    totalIdle += cpu.times.idle;
+  }
+  return {idle: totalIdle / cpus.length,  total: totalTick / cpus.length};
+}
+
+var startMeasure = cpuAverage();
+
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/', function(req,res) {
   console.log(req.body)
-  metricData['CPU'] = os.cpus();
+
+  var endMeasure = cpuAverage();
+
+  var idleDifference = endMeasure.idle - startMeasure.idle;
+  var totalDifference = endMeasure.total - startMeasure.total;
+  var percentageCPU = 100 - ~~(100 * idleDifference / totalDifference)
+
+  startMeasure = cpuAverage();
+
+  metricData['CPU'] = percentageCPU;
   metricData['totalMem'] = os.totalmem();
   metricData['freeMem'] = os.freemem();
   res.send(JSON.stringify(metricData))
