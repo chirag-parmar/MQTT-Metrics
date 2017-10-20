@@ -9,6 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "expressjs": "^1.0.1",
     "mongo": "^0.1.0",
     "mqtt": "^2.13.1"
   }
